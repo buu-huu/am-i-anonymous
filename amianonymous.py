@@ -3,6 +3,9 @@
 from ip2geotools.databases.noncommercial import DbIpCity
 import requests
 
+ANSI_COLOR_SAFE     = '\033[92m'
+ANSI_COLOR_NOTSAFE  = '\033[91m'
+
 def fetch_public_ip():
     fetch_adress = 'https://checkip.amazonaws.com'
     return requests.get(fetch_adress).text.strip()
@@ -20,12 +23,20 @@ def main():
     city = resolve_city(public_ip)
     country = resolve_country(public_ip)
 
+    # Setting font color depending on country
+    if country != 'DE':
+        safe = True
+        print(f'{ANSI_COLOR_SAFE}', end='')
+    else:
+        safe = False
+        print(f'{ANSI_COLOR_NOTSAFE}', end='')
+
     print('///////////////////////////////////////////////')
     print('Public IP:   {}'.format(public_ip))
     print('Location:    {}, {}'.format(city, country))
     print('\n')
 
-    if country != 'DE':
+    if safe:
         print('It seems, that you\'re safe!')
     else:
         print('Hmmm... Check the VPN one more time!')
